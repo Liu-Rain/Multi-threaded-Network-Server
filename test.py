@@ -2,13 +2,17 @@ import socket
 import threading
 
 class Node:
+    
+
     def __init__(self, name, data):
         self.name = name
         self.data = data
         self.next = None
         self.book_next = None
+    
 
 class Share_list:
+    book = {}
     def __init__(self):
         self.head = Node("head","head")
     
@@ -24,25 +28,33 @@ class Share_list:
 
                 while current_read != None:
                     print(current_read.data)
+                    print(current_read.name)
                     current_read = current_read.book_next
 
                 finish.append(current.name)
             current = current.next
     def get_head(self):
         return self.head
+    
     def insert(self, name, data):
+        #set next = newnode
         new_node = Node(name, data)
-        book = {}
-
         current_node = self.head
         while(current_node.next):
             current_node = current_node.next
-            
-            book.update({current_node.name:current_node}) 
-        
         current_node.next = new_node
-        book[name] = new_node
-        print(book)
+
+
+        #set book_next = newnode
+        if name in self.book:
+            self.book[name].book_next = new_node
+        else:
+            self.book.update({new_node.name: new_node})
+
+
+
+
+
     
             
         
@@ -51,10 +63,9 @@ x = Share_list()
 x.insert("book1", "dwadas")
 x.insert("book2", "dwadas")
 x.insert("book3", "dwadas")
-x.insert("book1", "dwadas")
-x.insert("book2", "dwadas")
-x.insert("book3", "dwadas")
-
+x.insert("book1", "biik1")
+x.insert("book2", "book222")
+x.insert("book3", "bolk3")
 
     
 
@@ -101,7 +112,6 @@ print(f"Server started on {host}:{port}")
 # Start listening for incoming connections
 serversocket.listen(5)
 
-node_array = []
 
 while True:
     # Accept an incoming connection
@@ -109,9 +119,8 @@ while True:
 
     # Create a new thread to handle the client connection
     client_thread = threading.Thread(target=handle_client, args=(clientsocket, address))
+
     client_thread.start()
-    if client_thread.name not in node_array:
-        node_array.append(client_thread.name)
+
 
     print(f"Started thread {client_thread.name} for {address}")
-    print(node_array)
